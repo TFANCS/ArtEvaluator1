@@ -3,47 +3,52 @@ window.onload = function () {
     spinner.classList.add('loaded');
 }
 
+
+const img = document.getElementById('file-preview');
+const predictButton = document.getElementById("predict");
+const scoreText = document.getElementById("art-score");
+
+
 document.getElementById('file-input').addEventListener('change', function (e) {
     var file = e.target.files[0];
 
     var blobUrl = window.URL.createObjectURL(file);
 
-    var img = document.getElementById('file-preview');
     img.src = blobUrl;
 });
 
 
-const predictButton = document.getElementById("predict");
-const scoreText = document.getElementById("art-score");
 
-tf.loadLayersModel("model/model.json").then(function(model) {
+
+tf.loadLayersModel("https://tfancs.github.io/ArtEvaluator1/model/model.json").then(function(model) {
     window.model = model;
 });
 
 
-window.model.predict([tf.tensor(input).reshape([1, 28, 28, 1])]).array().then(function(scores){
-    scores = scores[0];
-    scoreText.innerHTML = scores;
-});
+// preprocess the image
+function preprocessImage(image) {
 
-
-/*
-let model;
-async function loadModel() {
-
-  // model name is "mobilenet"
-  modelName = "mobilenet";
+    // resize the input image
+    let tensor = tf.browser.fromPixels(image)
+      .resizeNearestNeighbor([256, 256])
+      .toFloat();
   
-  model = undefined;
-  
-  // load the model using a HTTPS request (where you have stored your model files)
-  model = await tf.loadLayersModel('https://gogul09.github.io/models/mobilenet/model.json');
-  
-  // hide model loading progress box
-  loader.style.display = "none";
-  load_button.disabled = true;
-  load_button.innerHTML = "Loaded Model";
-  console.log("model loaded..");
+    // scale tensor image to range [0, 1]
+    return tensor.div(255).expandDims();
 }
 
-*/
+
+
+
+function buttonClickPredict(){
+
+    input = preprocessImage(img);
+
+    console.log(input)
+
+    window.model.predict(input).array().then(function(output){
+        console.log(output)
+        scoreText.innerHTML = Math.floor(output[0][0]*100);
+    });
+}
+
