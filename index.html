@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Passion+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>T.F.A.N.C.S.</title>
+</head>
+<body>
+    <noscript>
+        <div style="font-size: 18px; line-height: 24px; margin: 10%; width: 80%;">
+            <p>JavaScript is disabled in your browser</p>
+            <p style="margin: 20px 0;">
+                <button type="submit" style="background-color: #1da1f2; border-radius: 100px; border: none; box-shadow: none; color: #fff; cursor: pointer; font-size: 14px; font-weight: bold; line-height: 20px; padding: 6px 16px;">Yes</button>
+            </p>
+        </div>
+    </noscript>
+
+
+    <div id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="Header">
+        <h1>Art Evaluator</h1>
+    </div>
+
+    <div class="main-div">
+        <h2>Upload</h2>
+        <input id="file-input" type="file">
+        <br>
+        <img id="file-preview">
+        <br>
+        <button type="submit">Predict</button>
+        <p>Score:</p>
+    </div>
+
+
+    <footer>T.S.</footer>
+    <script src="javascript.js"></script>
+</body>
+</html>
