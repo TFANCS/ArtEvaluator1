@@ -7,7 +7,7 @@ window.onload = function () {
 const img = document.getElementById('file-preview');
 const predictButton = document.getElementById("predict");
 const scoreText = document.getElementById("art-score");
-
+const model = null;
 
 document.getElementById('file-input').addEventListener('change', function (e) {
     var file = e.target.files[0];
@@ -21,8 +21,10 @@ document.getElementById('file-input').addEventListener('change', function (e) {
 
 
 tf.loadLayersModel("https://tfancs.github.io/ArtEvaluator1/model/model.json").then(function(model) {
-    window.model = model;
+    this.model = model;
 });
+
+
 
 
 // preprocess the image
