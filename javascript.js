@@ -1,31 +1,31 @@
-/*
+
 class InvertedResidualBlock extends tf.layers.Layer{
     constructor(config){
         super(config);
 
-        this.kernel_size = config.kernel_size
+        this.kernelSize = config.kernelSize
         this.strides = config.strides
         this.filters = config.filters
 
-        this.conv2a = layers.Conv2D(filters, kernel_size = (1, 1), strides = 1, padding='same')
-        this.bn2a = layers.BatchNormalization()
-        this.dconv2a = layers.DepthwiseConv2D(kernel_size = kernel_size, strides = strides, padding='same')
-        this.bn2b = layers.BatchNormalization()
-        this.conv2b = layers.Conv2D(filters, kernel_size = (1, 1), strides = 1, padding='same')
-        this.bn2c = layers.BatchNormalization()
+        this.conv2a = tf.layers.conv2d({filters : this.filters, kernelSize : [1, 1], strides : 1, padding : 'same'})
+        this.bn2a = tf.layers.batchNormalization({})
+        this.dconv2a = tf.layers.depthwiseConv2d({kernelSize : this.kernelSize, strides : this.strides, padding : 'same'})
+        this.bn2b = tf.layers.batchNormalization({})
+        this.conv2b = tf.layers.conv2d({filters : this.filters, kernelSize : [1, 1], strides : 1, padding : 'same'})
+        this.bn2c = tf.layers.batchNormalization({})
     }
 
     build(inputShape){
         this.same_output_size = ((this.strides == 1) && (this.filters == inputShape[3]))
         if (!this.same_output_size){
-            this.conv2_sc = layers.Conv2D(this.filters, (1, 1), strides=this.strides, padding='same')
+            this.conv2_sc = tf.layers.conv2d({filters : this.filters, kernelSize : [1, 1], strides : this.strides, padding : 'same'})
         }
     }
 
     getConfig() {
         const config = super.getConfig();
         Object.assign(config, {
-            'kernel_size' : this.kernel_size,
+            'kernelSize' : this.kernelSize,
             'strides' : this.strides,
             'filters' : this.filters
         });
@@ -55,6 +55,10 @@ class InvertedResidualBlock extends tf.layers.Layer{
         }
         return x
     }
+
+    static get className() {
+        return "InvertedResidualBlock";
+    }
 }
 
 
@@ -65,12 +69,16 @@ class SqueezeAndExcitationBlock extends tf.layers.Layer{
         this.channels = config.channels
         this.r = config.r
 
-        this.gap = layers.GlobalAveragePooling2D()
+        if(this.r == null){
+            this.r = 8
+        }
 
-        this.dencea = layers.Dense(Math.floor(channels/r), activation="relu")
-        this.denseb = layers.Dense(channels, activation="sigmoid")
+        this.gap = tf.layers.globalAveragePooling2d({})
 
-        this.multiply = layers.Multiply()
+        this.dencea = tf.layers.dense({units : Math.floor(this.channels/this.r), activation : "relu"})
+        this.denseb = tf.layers.dense({units : this.channels, activation : "sigmoid"})
+
+        this.multiply = tf.layers.multiply({})
     }
 
     getConfig(){
@@ -90,6 +98,10 @@ class SqueezeAndExcitationBlock extends tf.layers.Layer{
         x = this.multiply([inputs, x])
 
         return x
+    }
+
+    static get className() {
+        return "SqueezeAndExcitationBlock";
     }
 }
 
@@ -116,6 +128,10 @@ class HardSwish extends tf.layers.Layer{
     compute_output_shape(inputShape){
         return inputShape
     }
+
+    static get className() {
+        return "HardSwish";
+    }
 }
 
 
@@ -124,26 +140,26 @@ class InvertedResidualBlockWithSE extends tf.layers.Layer{
     constructor(config){
         super(config);
 
-        this.kernel_size = config.kernel_size
+        this.kernelSize = config.kernelSize
         this.strides = config.strides
         this.filters = config.filters
 
-        this.conv2a = layers.Conv2D(filters, kernel_size = (1, 1), strides=1, padding='same')
-        this.bn2a = layers.BatchNormalization()
-        this.dconv2a = layers.DepthwiseConv2D(kernel_size = kernel_size, strides=strides, padding='same')
-        this.bn2b = layers.BatchNormalization()
+        this.conv2a = tf.layers.conv2d({filters : this.filters, kernelSize : [1, 1], strides : 1, padding : 'same'})
+        this.bn2a = tf.layers.batchNormalization({})
+        this.dconv2a = tf.layers.depthwiseConv2d({kernelSize : this.kernelSize, strides : this.strides, padding : 'same'})
+        this.bn2b = tf.layers.batchNormalization({})
 
-        this.se = SqueezeAndExcitationBlock(channels = filters)
+        this.se = new SqueezeAndExcitationBlock({channels : this.filters})
 
-        this.conv2b = layers.Conv2D(filters, kernel_size = (1, 1), strides = 1, padding='same')
-        this.bn2c = layers.BatchNormalization()
+        this.conv2b = tf.layers.conv2d({filters : this.filters, kernelSize : [1, 1], strides : 1, padding : 'same'})
+        this.bn2c = tf.layers.batchNormalization({})
     }
 
 
     build(inputShape){
         this.same_output_size = ((this.strides == 1) && (this.filters == inputShape[3]))
         if (!this.same_output_size){
-            this.conv2_sc = layers.Conv2D(this.filters, (1, 1), strides=this.strides, padding='same')
+            this.conv2_sc = tf.layers.conv2d({filters : this.filters, kernelSize : [1, 1], strides : this.strides, padding : 'same'})
         }
     }
 
@@ -151,7 +167,7 @@ class InvertedResidualBlockWithSE extends tf.layers.Layer{
     getConfig(){
         const config = super.getConfig();
         config = {
-            'kernel_size' : this.kernel_size,
+            'kernelSize' : this.kernelSize,
             'strides' : this.strides,
             'filters' : this.filters
         }
@@ -184,11 +200,17 @@ class InvertedResidualBlockWithSE extends tf.layers.Layer{
         }
         return x
     }
+
+    static get className() {
+        return "InvertedResidualBlockWithSE";
+    }
 }
 
-*/
 
-
+tf.serialization.registerClass(HardSwish);
+tf.serialization.registerClass(SqueezeAndExcitationBlock);
+tf.serialization.registerClass(InvertedResidualBlock);
+tf.serialization.registerClass(InvertedResidualBlockWithSE);
 
 
 window.onload = function () {
@@ -200,6 +222,7 @@ window.onload = function () {
 const img = document.getElementById('file-preview');
 const predictButton = document.getElementById("predict");
 const scoreText = document.getElementById("art-score");
+const calculatingText = document.getElementById("calculating-text");
 const model = null;
 
 document.getElementById('file-input').addEventListener('change', function (e) {
@@ -241,9 +264,13 @@ function buttonClickPredict(){
 
     console.log(input)
 
+    calculatingText.innerHTML = "Calculating..."
+
     window.model.predict(input).array().then(function(output){
         console.log(output)
         scoreText.innerHTML = Math.floor(output[0][0]*100);
     });
+
+    calculatingText.innerHTML = ""
 }
 
