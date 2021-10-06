@@ -16,6 +16,15 @@ class InvertedResidualBlock extends tf.layers.Layer{
     }
 
     build(inputShape){
+        
+        const inputDim = inputShape[3];
+        const kernelShape = this.kernelSize.concat([inputDim,this.filters]);
+
+        console.log(this.conv2a.name)
+        console.log(this.dconv2a.name)
+        console.log(this.conv2b.name)
+        console.log(this.conv2b.getWeights)
+
         this.same_output_size = ((this.strides == 1) && (this.filters == inputShape[3]))
         if (!this.same_output_size){
             this.conv2_sc = tf.layers.conv2d({filters : this.filters, kernelSize : [1, 1], strides : this.strides, padding : 'same'})
@@ -249,7 +258,6 @@ document.getElementById('file-input').addEventListener('change', function (e) {
 tf.loadLayersModel("https://tfancs.github.io/ArtEvaluator1/model/model.json").then(function(model) {
     this.model = model;
 });
-
 
 
 
