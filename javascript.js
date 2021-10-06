@@ -33,6 +33,7 @@ class InvertedResidualBlock extends tf.layers.Layer{
     }
 
     call(inputs, training=None){
+        return tf.tidy(() => {
 
         x = this.conv2a(inputs, training=training)
         x = this.bn2a(x)
@@ -54,6 +55,8 @@ class InvertedResidualBlock extends tf.layers.Layer{
             x += x1
         }
         return x
+
+        })
     }
 
     static get className() {
@@ -91,6 +94,7 @@ class SqueezeAndExcitationBlock extends tf.layers.Layer{
     }
 
     call(inputs, training=None){
+        return tf.tidy(() => {
 
         x = this.gap(inputs)
         x = this.dencea(x)
@@ -98,6 +102,7 @@ class SqueezeAndExcitationBlock extends tf.layers.Layer{
         x = this.multiply([inputs, x])
 
         return x
+        })
     }
 
     static get className() {
@@ -122,7 +127,9 @@ class HardSwish extends tf.layers.Layer{
     }
 
     call(inputs){
+        return tf.tidy(() => {
         return inputs * (tf.nn.relu6(inputs + 3) / 6)
+        })
     }
 
     compute_output_shape(inputShape){
@@ -176,6 +183,7 @@ class InvertedResidualBlockWithSE extends tf.layers.Layer{
 
 
     call(inputs, training=None){
+        return tf.tidy(() => {
 
         x = this.conv2a(inputs)
         x = this.bn2a(x)
@@ -199,6 +207,8 @@ class InvertedResidualBlockWithSE extends tf.layers.Layer{
             x += x1
         }
         return x
+        
+        })
     }
 
     static get className() {
