@@ -42,20 +42,24 @@ function preprocessImage(image) {
 
 
 
-function buttonClickPredict(){
+async function buttonClickPredict(){
+
 
     input = preprocessImage(img);
 
-    console.log(input)
-
     calculatingText.innerHTML = "Calculating..."
 
+    await sleep()
+
     window.model.predict(input).array().then(function(output){
-        console.log(output)
         scoreText.innerHTML = Math.floor(output[0][0]*100);
         calculatingText.innerHTML = ""
     });
 
-    
+}
+
+
+function sleep(){
+    return new Promise(resolve => setTimeout(resolve, 1));
 }
 

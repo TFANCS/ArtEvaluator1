@@ -88,6 +88,14 @@ body {
 
 
 
+#art-score {
+    padding: 0.2em;
+    margin: 0.2em;
+    font-size: 1.75em;
+}
+
+
+
 
 footer {
     width: 100%;
