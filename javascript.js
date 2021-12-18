@@ -22,9 +22,13 @@ document.getElementById('file-input').addEventListener('change', function (e) {
 
 
 tf.loadGraphModel("https://tfancs.github.io/ArtEvaluator1/model/model.json").then(function(model) {
+    window.model = model;
+});
+/*
+tf.loadGraphModel("https://tfancs.github.io/ArtEvaluator1/model_archive/Model2Temp3/model.json").then(function(model) {
     this.model = model;
 });
-
+*/
 
 
 // preprocess the image
@@ -48,10 +52,12 @@ async function buttonClickPredict(){
     input = preprocessImage(img);
 
     calculatingText.innerHTML = "Calculating..."
+    scoreText.innerHTML = ""
 
     await sleep()
 
     window.model.predict(input).array().then(function(output){
+        console.log(output);
         scoreText.innerHTML = Math.floor(output[0][0]*100);
         calculatingText.innerHTML = ""
     });
